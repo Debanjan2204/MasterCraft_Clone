@@ -1,7 +1,8 @@
 HELP.md
 bin/
-target/
-!target/generated-sources
+target/classes
+target/generated-test-sources
+target/test-classes
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
