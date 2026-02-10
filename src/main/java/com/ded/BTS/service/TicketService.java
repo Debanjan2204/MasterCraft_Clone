@@ -157,6 +157,7 @@ public class TicketService{
 		User author= userRepo.findById(addCommentRequest.authorId())
 				.orElseThrow(() -> new ObjectNotFoundException(User.class, addCommentRequest.authorId().toString()));
 		TicketComment ticketComment= addCommentRequestMapper.toEntity(addCommentRequest);
+		ticketComment.setTicket(ticketRepo.findById(ticketId).orElseThrow(() -> new RuntimeException()));
 		ticketComment.setAuthor(author);
 		return ticketCommentResponseMapper.toResponse( ticketCommentRepo.save(ticketComment));
 	}
