@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.util.List;
 
 import org.hibernate.ObjectNotFoundException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.ded.BTS.DTO.request.AddCommentRequest;
@@ -125,7 +127,11 @@ public class TicketService{
 	}
 
 	 public List<TicketResponse> getAllTickets(){
+		 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		 System.out.println(auth.getName());
+		 System.out.println(auth.getAuthorities());
 		 return ticketResponseMapper.toResponseList(ticketRepo.findAll());
+		 
 	 }
 	
 	public TicketResponse getTicketById(Long ticketId) {
@@ -174,6 +180,8 @@ public class TicketService{
 	public Boolean deleteTicket(Long ticketId) {
 		Ticket ticket = ticketRepo.findById(ticketId).orElseThrow(() -> new RuntimeException());
 		ticket.setRecEndDate(Instant.now());
+		ticket.setUpdatedAt(Instant.now());
+		ticket.setUpdatedBy(null);
 		ticketRepo.save(ticket);
 		return Boolean.TRUE;
 	}

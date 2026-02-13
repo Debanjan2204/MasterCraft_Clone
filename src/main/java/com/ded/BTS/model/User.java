@@ -1,13 +1,19 @@
 package com.ded.BTS.model;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.ded.BTS.enums.UserStatus;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -37,6 +43,10 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private UserStatus status;
 
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<UserRole> userRoles = new ArrayList<>();
+    
     /* Getters and Setters */
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -55,4 +65,17 @@ public class User extends BaseEntity {
 
     public UserStatus getStatus() { return status; }
     public void setStatus(UserStatus status) { this.status = status; }
+    
+	public List<UserRole> getUserRoles() {
+		return userRoles;
+	}
+	public void setUserRoles(List<UserRole> userRoles) {
+		this.userRoles = userRoles;
+	}
+	public void addUserRole(UserRole userRole) {
+	    this.userRoles.add(userRole);
+	    userRole.setUser(this);
+	}
+    
+    
 }

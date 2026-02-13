@@ -92,12 +92,12 @@ public abstract class BaseEntity {
         this.createdBy = "1L";
     }
 
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = Instant.now();
-
-        // TEMP for local testing
-        this.updatedBy = "1L";
-    }
+//    @PreUpdate
+//    protected void onUpdate(String updatedBy) {
+//        this.updatedAt = Instant.now();
+//
+//        // TEMP for local testing
+//        this.updatedBy = updatedBy;
+//    }
 
 }

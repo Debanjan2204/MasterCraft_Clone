@@ -6,7 +6,6 @@ import org.mapstruct.ReportingPolicy;
 
 import com.ded.BTS.DTO.request.AddCommentRequest;
 import com.ded.BTS.model.TicketComment;
-import com.ded.BTS.model.User;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface AddCommentRequestMapper {
