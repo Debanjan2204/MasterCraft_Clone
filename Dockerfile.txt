@@ -1,0 +1,14 @@
+# Use lightweight JDK 17
+FROM eclipse-temurin:17-jdk-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy jar file
+COPY target/*.jar app.jar
+
+# Expose port (Railway uses 8080 internally)
+EXPOSE 8080
+
+# Run the application
+ENTRYPOINT ["java","-Xms128m","-Xmx384m","-jar","app.jar"]

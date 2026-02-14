@@ -1,0 +1,29 @@
+# Maven
+target/*
+!target/*.jar
+
+# Git
+.git
+.gitignore
+
+# IDE files
+.idea
+.vscode
+*.iml
+*.log
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Node (if any)
+node_modules
+
+# Docker files not needed inside image
+docker-compose.yml
+
+# Documentation
+README.md
+
+# Test reports
+surefire-reports
