@@ -1,13 +1,19 @@
 package com.ded.BTS.model;
 
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
+
+import com.ded.BTS.beans.TicketEventListener;
 import com.ded.BTS.enums.TicketPriority;
 import com.ded.BTS.enums.TicketStatus;
 import com.ded.BTS.enums.TicketType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -16,11 +22,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PostLoad;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "tickets")
+@EntityListeners(TicketEventListener.class)
 public class Ticket extends BaseEntity {
 
     @Id
@@ -60,6 +69,26 @@ public class Ticket extends BaseEntity {
 
     private Instant dueDate;
 
+    @Transient
+    private Map<String, Object> originalState = new HashMap<>();
+
+    @PostLoad
+    public void storeOriginalState() {
+        originalState.put("project", this.project);
+        originalState.put("title", this.title);
+        originalState.put("description", this.description);
+        originalState.put("type", this.type);
+        originalState.put("priority", this.priority);
+        originalState.put("status", this.status);
+        originalState.put("assignee", this.assignee);
+        originalState.put("dueDate", this.dueDate);
+        originalState.put("recEndDate", this.recEndDate);
+    }
+
+    public Map<String, Object> getOriginalState() {
+        return originalState;
+    }
+    
     /* Getters and Setters */
     public Long getId() {
         return id;

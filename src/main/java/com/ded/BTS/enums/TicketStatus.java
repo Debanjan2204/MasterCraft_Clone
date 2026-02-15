@@ -5,6 +5,7 @@ public enum TicketStatus {
     PENDING_USER,
     FIXED_IN_BAT,
     CLOSED,
+    REOPEN,
     IN_PROGRESS;
 	public static TicketStatus getvalueOf(String value) {
 		try {

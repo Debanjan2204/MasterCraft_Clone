@@ -126,15 +126,15 @@ public class CrudTestRunner implements CommandLineRunner {
         System.out.println("TicketComments inserted: " + commentRepo.findAll());
 
         // 7️⃣ Add TicketHistory
-        TicketHistory history = new TicketHistory(
-                ticket,
-                "status",
-                "PENDING_IT",
-                "IN_PROGRESS",
-                user2,
-                Instant.now()
-        );
-        historyRepo.save(history);
+//        TicketHistory history = new TicketHistory(
+//                ticket,
+//                "status",
+//                "PENDING_IT",
+//                "IN_PROGRESS",
+//                user2,
+//                Instant.now()
+//        );
+//        historyRepo.save(history);
 
         System.out.println("TicketHistory inserted: " + historyRepo.findAll());
 

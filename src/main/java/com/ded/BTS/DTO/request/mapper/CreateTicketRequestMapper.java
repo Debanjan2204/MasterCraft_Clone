@@ -26,6 +26,7 @@ public interface CreateTicketRequestMapper {
 	@Mapping(target = "type", source = "ticketType")
 	@Mapping(target = "priority", source = "ticketPriority")
 	@Mapping(target = "status", source = "ticketStatus")
+	@Mapping(target = "originalState",ignore = true)
 	Ticket toEntity(CreateTicketRequest createTicketRequest);
 
 	default TicketType mapTicketType(String value) {

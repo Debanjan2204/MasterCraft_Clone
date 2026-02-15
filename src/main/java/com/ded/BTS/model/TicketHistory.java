@@ -2,15 +2,19 @@ package com.ded.BTS.model;
 
 import java.time.Instant;
 
+import com.ded.BTS.beans.ObjectToJsonConverter;
+
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
@@ -32,25 +36,26 @@ public class TicketHistory {
     @Column(name = "field_changed", nullable = false)
     private String fieldChanged;
 
-    @Column(name = "old_value", length = 5000)
-    private String oldValue;
+    @Convert(converter = ObjectToJsonConverter.class)
+    @Column(name = "old_value")
+    private Object oldValue;
 
-    @Column(name = "new_value", length = 5000)
-    private String newValue;
+    @Convert(converter = ObjectToJsonConverter.class)
+    @Column(name = "new_value")
+    private Object newValue;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "changed_by", nullable = false)
-    private User changedBy;
+    @Column(name = "changed_by")
+    private String changedBy;
 
     @Column(name = "changed_at", nullable = false)
     private Instant changedAt;
 
     /* No setters - constructor-based immutability */
-    protected TicketHistory() {
+    public TicketHistory() {
         // Required by JPA
     }
 
-    public TicketHistory(Ticket ticket, String fieldChanged, String oldValue, String newValue, User changedBy, Instant changedAt) {
+    public TicketHistory(Ticket ticket, String fieldChanged, Object oldValue, Object newValue, String changedBy, Instant changedAt) {
         this.ticket = ticket;
         this.fieldChanged = fieldChanged;
         this.oldValue = oldValue;
@@ -72,15 +77,15 @@ public class TicketHistory {
         return fieldChanged;
     }
 
-    public String getOldValue() {
+    public Object getOldValue() {
         return oldValue;
     }
 
-    public String getNewValue() {
+    public Object getNewValue() {
         return newValue;
     }
 
-    public User getChangedBy() {
+    public String getChangedBy() {
         return changedBy;
     }
 

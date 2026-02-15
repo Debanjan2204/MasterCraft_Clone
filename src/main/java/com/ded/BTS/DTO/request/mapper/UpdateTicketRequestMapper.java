@@ -28,6 +28,7 @@ public interface UpdateTicketRequestMapper {
     @Mapping(target = "reporter", ignore = true)
     @Mapping(target = "priority", ignore = true)
     @Mapping(target = "status", ignore = true)
+	@Mapping(target = "originalState",ignore = true)
 	void updateTicketFromDto(UpdateTicketRequest dto, @MappingTarget Ticket entity);
 
 	default TicketType mapTicketType(String value) {

@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.List;
 
 import org.hibernate.ObjectNotFoundException;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -47,12 +48,18 @@ public class TicketService {
 	private final AddCommentRequestMapper addCommentRequestMapper;
 	private final TicketCommentResponseMapper ticketCommentResponseMapper;
 	private final CurrentUser currentUser;
+	private final ApplicationEventPublisher applicationEventPublisher;
+
+
+
+
 
 	public TicketService(TicketRepo ticketRepo, UserRepo userRepo, TicketCommentRepo ticketCommentRepo,
 			ProjectRepo projectRepo, CreateTicketRequestMapper createTicketRequestMapper,
 			CreateTicketResponseMapper createTicketResponseMapper, UpdateTicketRequestMapper updateTicketRequestMapper,
 			TicketResponseMapper ticketResponseMapper, AddCommentRequestMapper addCommentRequestMapper,
-			TicketCommentResponseMapper ticketCommentResponseMapper, CurrentUser currentUser) {
+			TicketCommentResponseMapper ticketCommentResponseMapper, CurrentUser currentUser,
+			ApplicationEventPublisher applicationEventPublisher) {
 		super();
 		this.ticketRepo = ticketRepo;
 		this.userRepo = userRepo;
@@ -65,6 +72,7 @@ public class TicketService {
 		this.addCommentRequestMapper = addCommentRequestMapper;
 		this.ticketCommentResponseMapper = ticketCommentResponseMapper;
 		this.currentUser = currentUser;
+		this.applicationEventPublisher = applicationEventPublisher;
 	}
 
 	@Transactional
@@ -80,6 +88,7 @@ public class TicketService {
 		ticket.setAssignee(assignee);
 		ticket.setReporter(reporter);
 		ticketRepo.save(ticket);
+		applicationEventPublisher.publishEvent(ticket);
 		return createTicketResponseMapper.toResponse(ticket);
 	}
 
@@ -88,6 +97,7 @@ public class TicketService {
 		Ticket oldTicket = ticketRepo.findById(ticketId).orElseThrow(() -> new RuntimeException());
 		updateTicketRequestMapper.updateTicketFromDto(updateTicketRequest, oldTicket);
 		ticketRepo.save(oldTicket);
+		applicationEventPublisher.publishEvent(oldTicket);
 		return ticketResponseMapper.toResponse(oldTicket);
 	}
 
@@ -99,6 +109,7 @@ public class TicketService {
 		ticket.setAssignee(newAssigneeUser);
 		ticket.setUpdatedAt(Instant.now());
 		ticketRepo.save(ticket);
+		applicationEventPublisher.publishEvent(ticket);
 		return ticketResponseMapper.toResponse(ticket);
 	}
 
@@ -107,6 +118,7 @@ public class TicketService {
 		Ticket ticket = ticketRepo.findById(ticketId).orElseThrow(() -> new RuntimeException());
 		ticket.setStatus(TicketStatus.getvalueOf(newStatus.toUpperCase()));
 		ticketRepo.save(ticket);
+		applicationEventPublisher.publishEvent(ticket);
 		return ticketResponseMapper.toResponse(ticket);
 	}
 
@@ -115,6 +127,7 @@ public class TicketService {
 		Ticket ticket = ticketRepo.findById(ticketId).orElseThrow(() -> new RuntimeException());
 		ticket.setPriority(TicketPriority.getvalueOf(newPriority.toUpperCase()));
 		ticketRepo.save(ticket);
+		applicationEventPublisher.publishEvent(ticket);
 		return ticketResponseMapper.toResponse(ticket);
 	}
 
@@ -124,6 +137,7 @@ public class TicketService {
 		ticket.setDueDate(newDueDate);
 		ticket.setUpdatedAt(Instant.now());
 		ticketRepo.save(ticket);
+		applicationEventPublisher.publishEvent(ticket);
 		return ticketResponseMapper.toResponse(ticket);
 	}
 
@@ -176,6 +190,7 @@ public class TicketService {
 		Ticket ticket = ticketRepo.findById(ticketId).orElseThrow(() -> new RuntimeException());
 		ticket.setRecEndDate(Instant.now());
 		ticketRepo.save(ticket);
+		applicationEventPublisher.publishEvent(ticket);
 		return Boolean.TRUE;
 	}
 

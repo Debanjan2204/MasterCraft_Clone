@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ded.BTS.enums.UserStatus;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -45,6 +46,7 @@ public class User extends BaseEntity {
 
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<UserRole> userRoles = new ArrayList<>();
     
     /* Getters and Setters */
