@@ -1,4 +1,4 @@
-package com.ded.BTS.security;
+package com.ded.BTS.security.service;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.ded.BTS.model.User;
 import com.ded.BTS.repository.UserRepo;
+import com.ded.BTS.security.model.CustomUserDetails;
 @Service
 public class CustomUserDetailService implements UserDetailsService {
 

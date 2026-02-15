@@ -1,5 +1,7 @@
 package com.ded.BTS.DTO.request;
 
-public class ChangePriorityRequest {
+import jakarta.validation.constraints.NotBlank;
+
+public record ChangePriorityRequest(@NotBlank String priority) {
 
 }

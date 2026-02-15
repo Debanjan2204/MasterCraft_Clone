@@ -1,4 +1,4 @@
-package com.ded.BTS.security;
+package com.ded.BTS.security.model;
 
 import jakarta.validation.constraints.NotBlank;
 

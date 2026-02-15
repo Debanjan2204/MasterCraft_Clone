@@ -1,5 +1,7 @@
 package com.ded.BTS.DTO.request;
 
-public class ChangeStatusRequest {
+import jakarta.validation.constraints.NotBlank;
+
+public record ChangeStatusRequest(@NotBlank String status) {
 
 }

@@ -1,4 +1,4 @@
-package com.ded.BTS.config;
+package com.ded.BTS.security.config;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -19,7 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.ded.BTS.security.JwtAuthenticationFilter;
+import com.ded.BTS.security.filters.JwtAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity

@@ -13,7 +13,7 @@ import com.ded.BTS.model.User;
 import com.ded.BTS.model.UserRole;
 import com.ded.BTS.repository.RoleRepo;
 import com.ded.BTS.repository.UserRepo;
-import com.ded.BTS.security.RegisterRequest;
+import com.ded.BTS.security.model.RegisterRequest;
 
 @Service
 @Transactional

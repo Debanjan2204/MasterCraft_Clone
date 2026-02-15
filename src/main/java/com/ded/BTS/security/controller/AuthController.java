@@ -1,4 +1,4 @@
-package com.ded.BTS.security;
+package com.ded.BTS.security.controller;
 
 import java.util.List;
 
@@ -21,6 +21,10 @@ import com.ded.BTS.model.User;
 import com.ded.BTS.model.UserRole;
 import com.ded.BTS.repository.RoleRepo;
 import com.ded.BTS.repository.UserRepo;
+import com.ded.BTS.security.model.JwtResponse;
+import com.ded.BTS.security.model.LoginRequest;
+import com.ded.BTS.security.model.RegisterRequest;
+import com.ded.BTS.security.service.JwtService;
 import com.ded.BTS.service.UserService;
 
 @RestController

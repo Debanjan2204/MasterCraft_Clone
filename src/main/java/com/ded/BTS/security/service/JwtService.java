@@ -1,4 +1,4 @@
-package com.ded.BTS.security;
+package com.ded.BTS.security.service;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -6,6 +6,9 @@ import java.util.Date;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
+
+import com.ded.BTS.security.model.CustomUserDetails;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -14,7 +17,7 @@ import io.jsonwebtoken.security.Keys;
 public class JwtService {
 
 	private final String SECRET = "your-256-bit-secret-key-your-256-bit-secret-key";
-	private final long EXPIRATION = 1000 * 60 * 60; // 1 hour
+	private final long EXPIRATION = 1000 * 60 * 60 * 24; // 1 day
 
 	private Key getSigningKey() {
 		return Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));

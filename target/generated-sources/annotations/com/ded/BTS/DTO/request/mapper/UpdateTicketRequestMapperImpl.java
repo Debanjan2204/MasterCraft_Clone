@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-02-15T00:14:26+0530",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.5 (Oracle Corporation)"
+    date = "2026-02-15T17:08:45+0530",
+    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.41.0.v20250213-1140, environment: Java 21.0.6 (Eclipse Adoptium)"
 )
 @Component
 public class UpdateTicketRequestMapperImpl implements UpdateTicketRequestMapper {
@@ -22,14 +22,14 @@ public class UpdateTicketRequestMapperImpl implements UpdateTicketRequestMapper 
         if ( dto.ticketType() != null ) {
             entity.setType( mapTicketType( dto.ticketType() ) );
         }
-        if ( dto.title() != null ) {
-            entity.setTitle( dto.title() );
-        }
         if ( dto.description() != null ) {
             entity.setDescription( dto.description() );
         }
         if ( dto.dueDate() != null ) {
             entity.setDueDate( dto.dueDate() );
+        }
+        if ( dto.title() != null ) {
+            entity.setTitle( dto.title() );
         }
     }
 }
