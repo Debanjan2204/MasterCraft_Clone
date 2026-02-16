@@ -19,8 +19,11 @@ import com.ded.BTS.DTO.response.CreateTicketResponse;
 import com.ded.BTS.DTO.response.TicketResponse;
 import com.ded.BTS.service.TicketService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 @RestController
 @RequestMapping("/api/")
+@SecurityRequirement(name = "oauth2")
 public class BasicTicketController {
 	
 	private final TicketService ticketService;

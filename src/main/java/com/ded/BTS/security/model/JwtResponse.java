@@ -2,17 +2,11 @@ package com.ded.BTS.security.model;
 
 public record JwtResponse(
 		
-		String token,
-		String message
-		
+		String access_token,
+	    String token_type,
+	    long expires_in
 		) {
 
-	public JwtResponse(String token,String message) {
-
-		this.message=message;
-		this.token=token;
-				
-	}
 	
 	
 

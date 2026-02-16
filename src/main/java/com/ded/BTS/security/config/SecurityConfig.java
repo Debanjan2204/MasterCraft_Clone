@@ -21,36 +21,60 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.ded.BTS.security.filters.JwtAuthenticationFilter;
 
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.security.OAuthFlow;
+import io.swagger.v3.oas.models.security.OAuthFlows;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
-	  private final JwtAuthenticationFilter jwtFilter;
+	private final JwtAuthenticationFilter jwtFilter;
 
-	    public SecurityConfig(JwtAuthenticationFilter jwtFilter) {
-	        this.jwtFilter = jwtFilter;
-	    }
-	
-	
-	    @Bean
-	    PasswordEncoder passwordEncoder() {
-	        return new BCryptPasswordEncoder();
-	    }
-	
+	public SecurityConfig(JwtAuthenticationFilter jwtFilter) {
+		this.jwtFilter = jwtFilter;
+	}
+
 	@Bean
-	AuthenticationManager authenticationManager(
-	        AuthenticationConfiguration configuration) throws Exception {
-	    return configuration.getAuthenticationManager();
+	PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+	@Bean
+	AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+		return configuration.getAuthenticationManager();
+	}
+
+	@Bean
+	SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+		httpSecurity.csrf(csrf -> csrf.disable())
+				.authorizeHttpRequests(auth -> auth
+						.requestMatchers("/auth/**", "/error", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
+						.permitAll().anyRequest().authenticated())
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				//.httpBasic(Customizer.withDefaults())
+				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+		return httpSecurity.build();
 	}
 	
 	@Bean
-	SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
-		httpSecurity.csrf(csrf-> csrf.disable())
-		.authorizeHttpRequests(auth-> auth.requestMatchers("/auth/**","/error").permitAll().anyRequest().authenticated())
-		.sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-		.httpBasic(Customizer.withDefaults())
-		.addFilterBefore(jwtFilter,UsernamePasswordAuthenticationFilter.class);		
-		return httpSecurity.build();
+	OpenAPI customOpenAPI() {
+	    return new OpenAPI()
+	        .components(new Components()
+	            .addSecuritySchemes("oauth2",
+	                new SecurityScheme()
+	                    .type(SecurityScheme.Type.OAUTH2)
+	                    .flows(new OAuthFlows()
+	                        .password(new OAuthFlow()
+	                            .tokenUrl("/auth/login")
+	                        )
+	                    )
+	            )
+	        )
+	        .addSecurityItem(new SecurityRequirement().addList("oauth2"));
 	}
 }

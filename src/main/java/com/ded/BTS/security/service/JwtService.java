@@ -3,6 +3,8 @@ package com.ded.BTS.security.service;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -16,8 +18,10 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
 
-	private final String SECRET = "your-256-bit-secret-key-your-256-bit-secret-key";
-	private final long EXPIRATION = 1000 * 60 * 60 * 24; // 1 day
+	private final String SECRET = "MY_SPECIAL_SECRET_KEY_FOR_HMAC_SIGNING";
+	
+	@Value("${jwt.token.expiration}")
+	private  long EXPIRATION; // 1hr
 
 	private Key getSigningKey() {
 		return Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));

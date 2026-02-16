@@ -1,0 +1,1 @@
+ALTER TABLE ticket_history ALTER COLUMN old_value TYPE JSONB USING to_jsonb(old_value::TEXT),ALTER COLUMN new_value TYPE JSONB USING to_jsonb(new_value::TEXT);

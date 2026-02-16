@@ -21,8 +21,11 @@ import com.ded.BTS.service.TicketService;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 @RestController
 @RequestMapping("/api/tickets")
+@SecurityRequirement(name = "oauth2")
 public class ActionTicketController {
 
 	private final TicketService ticketService;
