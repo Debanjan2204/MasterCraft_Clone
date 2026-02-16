@@ -2,6 +2,9 @@ package com.ded.BTS.model;
 
 import java.time.Instant;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import com.ded.BTS.beans.ObjectToJsonConverter;
 
 import jakarta.persistence.Access;
@@ -36,14 +39,14 @@ public class TicketHistory {
     @Column(name = "field_changed", nullable = false)
     private String fieldChanged;
 
-    @Convert(converter = ObjectToJsonConverter.class)
-    @Column(name = "old_value")
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "old_value", columnDefinition = "jsonb")
     private Object oldValue;
 
-    @Convert(converter = ObjectToJsonConverter.class)
-    @Column(name = "new_value")
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "new_value", columnDefinition = "jsonb")
     private Object newValue;
-
+    
     @Column(name = "changed_by", nullable = false)
     private String changedBy;
 
