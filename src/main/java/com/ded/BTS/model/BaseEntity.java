@@ -13,10 +13,10 @@ import jakarta.persistence.MappedSuperclass;
 @EntityListeners(BaseEntityAuditListener.class)
 public abstract class BaseEntity {
 
-    @Column(name = "created_by", updatable = false)
+    @Column(name = "created_by", nullable = false, updatable = false)
     protected String createdBy;
 
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     protected Instant createdAt;
 
     @Column(name = "updated_by")
@@ -25,10 +25,10 @@ public abstract class BaseEntity {
     @Column(name = "updated_at")
     protected Instant updatedAt;
 
-    @Column(name = "rec_start_date", updatable = false)
+    @Column(name = "rec_start_date", nullable = false, updatable = false)
     protected Instant recStartDate;
 
-    @Column(name = "rec_end_date")
+    @Column(name = "rec_end_date", nullable = false)
     protected Instant recEndDate;
 
     /* getters & setters */

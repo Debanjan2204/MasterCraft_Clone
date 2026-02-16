@@ -44,7 +44,7 @@ public class TicketHistory {
     @Column(name = "new_value")
     private Object newValue;
 
-    @Column(name = "changed_by")
+    @Column(name = "changed_by", nullable = false)
     private String changedBy;
 
     @Column(name = "changed_at", nullable = false)
