@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/tickets")
@@ -36,26 +37,26 @@ public class ActionTicketController {
 	}
 
 	@PostMapping("/{ticketId}/assign")
-	public ResponseEntity<TicketResponse> assignTicket(@RequestBody AssignTicketRequest assignTicketRequest,
+	public ResponseEntity<TicketResponse> assignTicket(@Valid @RequestBody AssignTicketRequest assignTicketRequest,
 			@PathVariable Long ticketId) {
 		return ResponseEntity.status(HttpStatus.OK).body(ticketService.assignTicket(ticketId, assignTicketRequest.userName()));
 	}
 
 	@PostMapping("/{ticketId}/status")
-	public ResponseEntity<TicketResponse> changeTicketStatus(@RequestBody ChangeStatusRequest changeStatusRequest,
+	public ResponseEntity<TicketResponse> changeTicketStatus(@Valid @RequestBody ChangeStatusRequest changeStatusRequest,
 			@PathVariable Long ticketId) {
 		return ResponseEntity.status(HttpStatus.OK).body(ticketService.changeTicketStatus(ticketId, changeStatusRequest.status()));
 	}
 
 	@PostMapping("/{ticketId}/priority")
-	public ResponseEntity<TicketResponse> changeTicketPriority(@RequestBody ChangePriorityRequest changePriorityRequest,
+	public ResponseEntity<TicketResponse> changeTicketPriority(@Valid @RequestBody ChangePriorityRequest changePriorityRequest,
 			@PathVariable Long ticketId) {
 		return ResponseEntity.status(HttpStatus.OK).body(ticketService.setPriority(ticketId, changePriorityRequest.priority()));
 	}
 
 	@PostMapping("/{ticketId}/due-date")
 	public ResponseEntity<TicketResponse> changeTicketDueDate(
-			@RequestBody ChangeDueDateRequest changeDueDateRequest,
+			@Valid @RequestBody ChangeDueDateRequest changeDueDateRequest,
 			@PathVariable Long ticketId) {
 		return ResponseEntity.status(HttpStatus.OK).body(ticketService.setDueDate(ticketId, changeDueDateRequest.dueDate()));
 	}

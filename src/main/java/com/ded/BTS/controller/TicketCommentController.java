@@ -15,6 +15,8 @@ import com.ded.BTS.DTO.request.AddCommentRequest;
 import com.ded.BTS.DTO.response.TicketCommentResponse;
 import com.ded.BTS.service.TicketService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/")
 public class TicketCommentController {
@@ -38,7 +40,7 @@ public class TicketCommentController {
 	
 	
 	@PostMapping("/tickets/{id}/comments")
-	public ResponseEntity<Object> addComment(@PathVariable("id") Long ticketId, @RequestBody AddCommentRequest addCommentRequest) {
+	public ResponseEntity<Object> addComment(@PathVariable("id") Long ticketId,@Valid @RequestBody AddCommentRequest addCommentRequest) {
 		
 	    TicketCommentResponse ticketCommentResponse = ticketService.addComment(ticketId, addCommentRequest);
 	    

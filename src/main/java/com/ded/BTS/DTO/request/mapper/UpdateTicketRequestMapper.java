@@ -1,5 +1,7 @@
 package com.ded.BTS.DTO.request.mapper;
 
+import java.time.Instant;
+
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -19,7 +21,7 @@ public interface UpdateTicketRequestMapper {
 	@Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "updatedAt", expression = "java(java.time.Instant.now())")
     @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "recStartDate", ignore = true)
     @Mapping(target = "recEndDate", ignore = true)

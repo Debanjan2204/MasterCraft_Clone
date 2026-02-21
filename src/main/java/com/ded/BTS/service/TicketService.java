@@ -32,6 +32,7 @@ import com.ded.BTS.repository.TicketRepo;
 import com.ded.BTS.repository.UserRepo;
 import com.ded.BTS.security.model.CurrentUser;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -78,11 +79,11 @@ public class TicketService {
 	@Transactional
 	public CreateTicketResponse createTicket(CreateTicketRequest ticketRequest) {
 		Project project = projectRepo.findById(ticketRequest.projectId())
-				.orElseThrow(() -> new ObjectNotFoundException(Project.class, ticketRequest.projectId().toString()));
+				.orElseThrow(()-> new EntityNotFoundException("Project with id "+ticketRequest.projectId()+" not found"));
 		User assignee = userRepo.findByUsername(ticketRequest.assigneeUserName())
-				.orElseThrow(() -> new ObjectNotFoundException(User.class, ticketRequest.assigneeUserName()));
+				.orElseThrow(()-> new EntityNotFoundException("Assignee with username "+ticketRequest.assigneeUserName()+" not found"));
 		User reporter = userRepo.findByUsername(currentUser.getLoggedInUserId())
-				.orElseThrow(() -> new ObjectNotFoundException(User.class, currentUser.getLoggedInUserId().toString()));
+				.orElseThrow(()-> new EntityNotFoundException("Reporter with id "+currentUser.getLoggedInUserId()+" not found"));
 		Ticket ticket = createTicketRequestMapper.toEntity(ticketRequest);
 		ticket.setProject(project);
 		ticket.setAssignee(assignee);
@@ -94,7 +95,8 @@ public class TicketService {
 
 	@Transactional
 	public TicketResponse updateTicket(Long ticketId, UpdateTicketRequest updateTicketRequest) {
-		Ticket oldTicket = ticketRepo.findById(ticketId).orElseThrow(() -> new RuntimeException());
+		Ticket oldTicket = ticketRepo.findById(ticketId)
+				.orElseThrow(()-> new EntityNotFoundException("Ticket Number "+ticketId+" not found"));
 		updateTicketRequestMapper.updateTicketFromDto(updateTicketRequest, oldTicket);
 		ticketRepo.save(oldTicket);
 		applicationEventPublisher.publishEvent(oldTicket);
@@ -105,7 +107,7 @@ public class TicketService {
 	public TicketResponse assignTicket(Long ticketId, String newAssigneeUserName) {
 		Ticket ticket = ticketRepo.findById(ticketId).orElseThrow(() -> new RuntimeException("Ticket Not Found"));
 		User newAssigneeUser = userRepo.findByUsername(newAssigneeUserName)
-				.orElseThrow(() -> new RuntimeException("User Not Found"));
+				.orElseThrow(()-> new EntityNotFoundException("User with username "+newAssigneeUserName+" not found"));
 		ticket.setAssignee(newAssigneeUser);
 		ticket.setUpdatedAt(Instant.now());
 		ticketRepo.save(ticket);
@@ -115,7 +117,7 @@ public class TicketService {
 
 	@Transactional
 	public TicketResponse changeTicketStatus(Long ticketId, String newStatus) {
-		Ticket ticket = ticketRepo.findById(ticketId).orElseThrow(() -> new RuntimeException());
+		Ticket ticket = ticketRepo.findById(ticketId).orElseThrow(()-> new EntityNotFoundException("Ticket Number "+ticketId+" not found"));
 		ticket.setStatus(TicketStatus.getvalueOf(newStatus.toUpperCase()));
 		ticketRepo.save(ticket);
 		applicationEventPublisher.publishEvent(ticket);
@@ -124,7 +126,7 @@ public class TicketService {
 
 	@Transactional
 	public TicketResponse setPriority(Long ticketId, String newPriority) {
-		Ticket ticket = ticketRepo.findById(ticketId).orElseThrow(() -> new RuntimeException());
+		Ticket ticket = ticketRepo.findById(ticketId).orElseThrow(()-> new EntityNotFoundException("Ticket Number "+ticketId+" not found"));
 		ticket.setPriority(TicketPriority.getvalueOf(newPriority.toUpperCase()));
 		ticketRepo.save(ticket);
 		applicationEventPublisher.publishEvent(ticket);
@@ -133,7 +135,7 @@ public class TicketService {
 
 	@Transactional
 	public TicketResponse setDueDate(Long ticketId, Instant newDueDate) {
-		Ticket ticket = ticketRepo.findById(ticketId).orElseThrow(() -> new RuntimeException());
+		Ticket ticket = ticketRepo.findById(ticketId).orElseThrow(()-> new EntityNotFoundException("Ticket Number "+ticketId+" not found"));
 		ticket.setDueDate(newDueDate);
 		ticket.setUpdatedAt(Instant.now());
 		ticketRepo.save(ticket);
@@ -149,37 +151,42 @@ public class TicketService {
 	public TicketResponse getTicketById(Long ticketId) {
 
 		return ticketResponseMapper
-				.toResponse(ticketRepo.findById(ticketId).orElseThrow(() -> new RuntimeException("Ticket Not Found")));
+				.toResponse(ticketRepo.findById(ticketId).orElseThrow(()-> new EntityNotFoundException("Ticket Number "+ticketId+" not found")));
 	}
 
 	public List<TicketResponse> getTicketsByProject(Long projectId) {
-		Project project = projectRepo.findById(projectId).orElseThrow(() -> new RuntimeException());
+		Project project = projectRepo.findById(projectId).orElseThrow(()-> new EntityNotFoundException("Project with id "+projectId+" not found"));
+
 		return ticketResponseMapper.toResponseList(ticketRepo.findByProject(project));
 	}
 
 	public List<TicketResponse> getTicketsByAssignee(String assigneeUserName) {
-		User assignee = userRepo.findByUsername(assigneeUserName).orElseThrow(() -> new RuntimeException());
+		User assignee = userRepo.findByUsername(assigneeUserName).orElseThrow(() -> new EntityNotFoundException(
+				"Assignee with username " + assigneeUserName + " not found"));
+
 		return ticketResponseMapper.toResponseList(ticketRepo.findByAssignee(assignee));
 	}
 
 	public List<TicketResponse> getTicketsByReporter() {
 		User reporter = userRepo.findByUsername(currentUser.getLoggedInUserId())
-				.orElseThrow(() -> new RuntimeException());
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Reporter with username " + currentUser.getLoggedInUserId() + " not found"));
 		return ticketResponseMapper.toResponseList(ticketRepo.findByReporter(reporter));
 	}
 
 	@Transactional
 	public TicketCommentResponse addComment(Long ticketId, AddCommentRequest addCommentRequest) {
 		User author = userRepo.findByUsername(currentUser.getLoggedInUserId())
-				.orElseThrow(() -> new ObjectNotFoundException(User.class, currentUser.getLoggedInUserId()));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Author with username " + currentUser.getLoggedInUserId() + " not found"));
 		TicketComment ticketComment = addCommentRequestMapper.toEntity(addCommentRequest);
-		ticketComment.setTicket(ticketRepo.findById(ticketId).orElseThrow(() -> new RuntimeException()));
+		ticketComment.setTicket(ticketRepo.findById(ticketId).orElseThrow(()-> new EntityNotFoundException("Ticket Number "+ticketId+" not found")));
 		ticketComment.setAuthor(author);
 		return ticketCommentResponseMapper.toResponse(ticketCommentRepo.save(ticketComment));
 	}
 
 	public List<TicketCommentResponse> getCommentsByTicket(Long ticketId) {
-		Ticket ticket = ticketRepo.findById(ticketId).orElseThrow(() -> new RuntimeException());
+		Ticket ticket = ticketRepo.findById(ticketId).orElseThrow(()-> new EntityNotFoundException("Ticket Number "+ticketId+" not found"));
 
 		return ticketCommentResponseMapper.toResponseList(ticketCommentRepo.findByTicket(ticket));
 	}
@@ -187,7 +194,7 @@ public class TicketService {
 	@Transactional
 	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 	public Boolean deleteTicket(Long ticketId) {
-		Ticket ticket = ticketRepo.findById(ticketId).orElseThrow(() -> new RuntimeException());
+		Ticket ticket = ticketRepo.findById(ticketId).orElseThrow(()-> new EntityNotFoundException("Ticket Number "+ticketId+" not found"));
 		ticket.setRecEndDate(Instant.now());
 		ticketRepo.save(ticket);
 		applicationEventPublisher.publishEvent(ticket);

@@ -20,6 +20,7 @@ import com.ded.BTS.DTO.response.TicketResponse;
 import com.ded.BTS.service.TicketService;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/")
@@ -48,14 +49,14 @@ public class BasicTicketController {
 	}
 
 	@PostMapping("/tickets")
-	public ResponseEntity<CreateTicketResponse> createTicket(@RequestBody CreateTicketRequest createTicketRequest){
+	public ResponseEntity<CreateTicketResponse> createTicket(@Valid @RequestBody CreateTicketRequest createTicketRequest){
 		
 		CreateTicketResponse createTicketResponse= ticketService.createTicket(createTicketRequest);
 		return  ResponseEntity.status(HttpStatus.CREATED).body(createTicketResponse);
 	}
 	
 	@PutMapping("/tickets/{id}")
-	public ResponseEntity<TicketResponse> updateTicket(@PathVariable Long id , @RequestBody UpdateTicketRequest updateTicketRequest ){
+	public ResponseEntity<TicketResponse> updateTicket(@PathVariable Long id , @Valid @RequestBody UpdateTicketRequest updateTicketRequest ){
 		TicketResponse ticketResponse = ticketService.updateTicket(id, updateTicketRequest);
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(ticketResponse);
 	}

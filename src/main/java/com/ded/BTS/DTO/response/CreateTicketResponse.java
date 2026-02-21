@@ -16,22 +16,9 @@ public record CreateTicketResponse(
 	    String status,
 	    UserSummary reporter,
 	    UserSummary assignee,
-	    @JsonFormat(
-	            shape = JsonFormat.Shape.STRING,
-	            pattern = "yyyy-MM-dd HH:mm:ss",
-	            timezone = "UTC"
-	        )
 	    Instant dueDate,
-	    @JsonFormat(
-	            shape = JsonFormat.Shape.STRING,
-	            pattern = "yyyy-MM-dd HH:mm:ss",
-	            timezone = "UTC"
-	        )
+	    
 	    Instant createdAt,
-	    @JsonFormat(
-	            shape = JsonFormat.Shape.STRING,
-	            pattern = "yyyy-MM-dd HH:mm:ss",
-	            timezone = "UTC"
-	        )
+	    
 	    Instant updatedAt
 		) {};

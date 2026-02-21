@@ -16,8 +16,6 @@ import com.ded.BTS.model.UserSummary;
 import com.ded.BTS.repository.TicketHistoryRepo;
 import com.ded.BTS.security.model.CurrentUser;
 
-import jakarta.persistence.PreUpdate;
-import tools.jackson.databind.ObjectMapper;
 
 @Component
 public class TicketEventListener {
