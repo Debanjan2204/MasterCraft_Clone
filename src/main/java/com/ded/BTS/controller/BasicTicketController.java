@@ -19,8 +19,12 @@ import com.ded.BTS.DTO.response.CreateTicketResponse;
 import com.ded.BTS.DTO.response.TicketResponse;
 import com.ded.BTS.service.TicketService;
 
+import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+
+import io.swagger.v3.oas.annotations.tags.*;
+
 
 @RestController
 @RequestMapping("/api/")
@@ -34,6 +38,8 @@ public class BasicTicketController {
 		this.ticketService = ticketService;
 	}
 
+	@Tag(name = "1️⃣ Ticket - Read Operations")
+	@Operation(summary = "Get all tickets")
 	@GetMapping("/tickets")
 	public ResponseEntity<List<TicketResponse>> findAllTickets(){
 		List<TicketResponse> ticketResponse= ticketService.getAllTickets();
@@ -41,6 +47,8 @@ public class BasicTicketController {
 		return  ResponseEntity.status(HttpStatus.OK).body(ticketResponse);
 	}
 
+	@Tag(name = "1️⃣ Ticket - Read Operations")
+	@Operation(summary = "Get ticket by ID")
 	@GetMapping("/tickets/{id}")
 	public ResponseEntity<TicketResponse> findTicket(@PathVariable Long id){
 		TicketResponse ticketResponse= ticketService.getTicketById(id);
@@ -48,6 +56,8 @@ public class BasicTicketController {
 		return  ResponseEntity.status(HttpStatus.OK).body(ticketResponse);
 	}
 
+	@Tag(name = "2️⃣ Ticket - Write Operations")
+	@Operation(summary = "Create ticket")
 	@PostMapping("/tickets")
 	public ResponseEntity<CreateTicketResponse> createTicket(@Valid @RequestBody CreateTicketRequest createTicketRequest){
 		
@@ -55,12 +65,16 @@ public class BasicTicketController {
 		return  ResponseEntity.status(HttpStatus.CREATED).body(createTicketResponse);
 	}
 	
+	@Tag(name = "2️⃣ Ticket - Write Operations")
+	@Operation(summary = "Update ticket")
 	@PutMapping("/tickets/{id}")
 	public ResponseEntity<TicketResponse> updateTicket(@PathVariable Long id , @Valid @RequestBody UpdateTicketRequest updateTicketRequest ){
 		TicketResponse ticketResponse = ticketService.updateTicket(id, updateTicketRequest);
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(ticketResponse);
 	}
-	
+
+	@Tag(name = "3️⃣ Ticket - Dangerous Operations")
+	@Operation(summary = "Delete ticket permanently")
 	@DeleteMapping("/tickets/{id}")
 	public ResponseEntity<Boolean> deleteTicket(@PathVariable Long id){
 		return ResponseEntity.status(HttpStatus.OK).body(ticketService.deleteTicket(id));

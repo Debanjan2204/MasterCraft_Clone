@@ -22,6 +22,7 @@ import com.ded.BTS.DTO.response.mapper.TicketCommentResponseMapper;
 import com.ded.BTS.DTO.response.mapper.TicketResponseMapper;
 import com.ded.BTS.enums.TicketPriority;
 import com.ded.BTS.enums.TicketStatus;
+import com.ded.BTS.enums.UserStatus;
 import com.ded.BTS.model.Project;
 import com.ded.BTS.model.Ticket;
 import com.ded.BTS.model.TicketComment;
@@ -80,9 +81,9 @@ public class TicketService {
 	public CreateTicketResponse createTicket(CreateTicketRequest ticketRequest) {
 		Project project = projectRepo.findById(ticketRequest.projectId())
 				.orElseThrow(()-> new EntityNotFoundException("Project with id "+ticketRequest.projectId()+" not found"));
-		User assignee = userRepo.findByUsername(ticketRequest.assigneeUserName())
+		User assignee = userRepo.findByUsername(ticketRequest.assigneeUserName(),UserStatus.ACTIVE)
 				.orElseThrow(()-> new EntityNotFoundException("Assignee with username "+ticketRequest.assigneeUserName()+" not found"));
-		User reporter = userRepo.findByUsername(currentUser.getLoggedInUserId())
+		User reporter = userRepo.findByUsername(currentUser.getLoggedInUserId(),UserStatus.ACTIVE)
 				.orElseThrow(()-> new EntityNotFoundException("Reporter with id "+currentUser.getLoggedInUserId()+" not found"));
 		Ticket ticket = createTicketRequestMapper.toEntity(ticketRequest);
 		ticket.setProject(project);
@@ -106,7 +107,7 @@ public class TicketService {
 	@Transactional
 	public TicketResponse assignTicket(Long ticketId, String newAssigneeUserName) {
 		Ticket ticket = ticketRepo.findById(ticketId).orElseThrow(() -> new RuntimeException("Ticket Not Found"));
-		User newAssigneeUser = userRepo.findByUsername(newAssigneeUserName)
+		User newAssigneeUser = userRepo.findByUsername(newAssigneeUserName,UserStatus.ACTIVE)
 				.orElseThrow(()-> new EntityNotFoundException("User with username "+newAssigneeUserName+" not found"));
 		ticket.setAssignee(newAssigneeUser);
 		ticket.setUpdatedAt(Instant.now());
@@ -144,7 +145,7 @@ public class TicketService {
 	}
 
 	public List<TicketResponse> getAllTickets() {
-		return ticketResponseMapper.toResponseList(ticketRepo.findAll());
+		return ticketResponseMapper.toResponseList(ticketRepo.findAllByOrderByIdAsc());
 
 	}
 
@@ -161,14 +162,14 @@ public class TicketService {
 	}
 
 	public List<TicketResponse> getTicketsByAssignee(String assigneeUserName) {
-		User assignee = userRepo.findByUsername(assigneeUserName).orElseThrow(() -> new EntityNotFoundException(
+		User assignee = userRepo.findByUsername(assigneeUserName,UserStatus.ACTIVE).orElseThrow(() -> new EntityNotFoundException(
 				"Assignee with username " + assigneeUserName + " not found"));
 
 		return ticketResponseMapper.toResponseList(ticketRepo.findByAssignee(assignee));
 	}
 
 	public List<TicketResponse> getTicketsByReporter() {
-		User reporter = userRepo.findByUsername(currentUser.getLoggedInUserId())
+		User reporter = userRepo.findByUsername(currentUser.getLoggedInUserId(),UserStatus.ACTIVE)
 				.orElseThrow(() -> new EntityNotFoundException(
 						"Reporter with username " + currentUser.getLoggedInUserId() + " not found"));
 		return ticketResponseMapper.toResponseList(ticketRepo.findByReporter(reporter));
@@ -176,7 +177,7 @@ public class TicketService {
 
 	@Transactional
 	public TicketCommentResponse addComment(Long ticketId, AddCommentRequest addCommentRequest) {
-		User author = userRepo.findByUsername(currentUser.getLoggedInUserId())
+		User author = userRepo.findByUsername(currentUser.getLoggedInUserId(),UserStatus.ACTIVE)
 				.orElseThrow(() -> new EntityNotFoundException(
 						"Author with username " + currentUser.getLoggedInUserId() + " not found"));
 		TicketComment ticketComment = addCommentRequestMapper.toEntity(addCommentRequest);

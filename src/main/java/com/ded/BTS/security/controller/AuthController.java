@@ -29,7 +29,12 @@ import com.ded.BTS.security.model.RegisterRequest;
 import com.ded.BTS.security.service.JwtService;
 import com.ded.BTS.service.UserService;
 
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.http.MediaType;
+
 
 @RestController
 @RequestMapping("/auth")
@@ -48,6 +53,7 @@ public class AuthController {
 		this.userService=userService;
 	}
 
+	@Hidden
 	@PostMapping(value = "/login", consumes= MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public ResponseEntity<?> login(
 	        @RequestParam String username,
@@ -65,13 +71,21 @@ public class AuthController {
 	}
 
 
-	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
-	@PostMapping("/users")
+	@Tag(name = "User Registration Operations")
+	@Operation(summary = "Register an user")
+	@PostMapping("/register-user")
 	public ResponseEntity<?> createUser(@RequestBody RegisterRequest request) {
-		userService.createUser(request);
+		String res= userService.createUser(request);
+		if(res!=null) {
 	    return ResponseEntity.ok("User created successfully");
+		}
+		else {
+		    return ResponseEntity.ok("User created successfully \nAwaiting Administrator verification");
+
+		}
 	}
 	
+	@Hidden
 	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 	@PostMapping("/users/{username}/assign-roles")
 	public ResponseEntity<?> assignRole(

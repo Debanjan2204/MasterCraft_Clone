@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,58 +31,48 @@ public class GlobalExceptionHandler {
 		super();
 		this.factory = factory;
 	}
+
+	@ExceptionHandler(AuthorizationException.class)
+    public ProblemDetail handleAuthorizationException(AuthorizationException ex,HttpServletRequest request) {
+        return factory.build(HttpStatus.UNAUTHORIZED, "Not Authorized to perform this ", ex.getMessage(), "UNAUTHORIZED",request.getRequestURI() , null);
+    }
+	
+	@ExceptionHandler(InternalAuthenticationServiceException.class)
+    public ProblemDetail handleAuthorizationException(InternalAuthenticationServiceException ex,HttpServletRequest request) {
+        return factory.build(HttpStatus.UNAUTHORIZED, "Not Authorized to perform this ", ex.getMessage(), "UNAUTHORIZED",request.getRequestURI() , null);
+    }
+	
+	@ExceptionHandler(AuthorizationDeniedException.class)
+	public ProblemDetail handleNotFound(AuthorizationDeniedException ex, HttpServletRequest request) {
+
+		return factory.build(HttpStatus.UNAUTHORIZED, "You are not Authorized", ex.getMessage(), "UNAUTHORIZED",
+				request.getRequestURI(), null);
+	}
+	
 	
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ProblemDetail handleHttpMsgNotReadable(HttpMessageNotReadableException ex, HttpServletRequest request) {
-		
+
 		Throwable root = ex.getMostSpecificCause();
-		
-		ProblemDetail pd =
-		            factory.build(
-		                    HttpStatus.BAD_REQUEST,
-		                    "Validation Failed",
-		                    "Request validation failed",
-		                    "VALIDATION_FAILED",
-		                    request.getRequestURI(),
-		                    Map.of(
-		                            "field",
-		                            root.getMessage()
-		                        )
-		            );
 
-		    return pd;
-		
+		ProblemDetail pd = factory.build(HttpStatus.BAD_REQUEST, "Validation Failed", "Request validation failed",
+				"VALIDATION_FAILED", request.getRequestURI(), Map.of("field", root.getMessage()));
+
+		return pd;
+
 	}
-	
+
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ProblemDetail handleValidationException(
-	        MethodArgumentNotValidException ex,
-	        HttpServletRequest request) {
+	public ProblemDetail handleValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
 
-	    Map<String, String> errors =
-	            ex.getBindingResult()
-	              .getFieldErrors()
-	              .stream()
-	              .collect(Collectors.toMap(
-	                      FieldError::getField,
-	                      FieldError::getDefaultMessage,
-	                      (msg1, msg2) -> msg1
-	              ));
+		Map<String, String> errors = ex.getBindingResult().getFieldErrors().stream()
+				.collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage, (msg1, msg2) -> msg1));
 
-	    ProblemDetail pd =
-	            factory.build(
-	                    HttpStatus.BAD_REQUEST,
-	                    "Validation Failed",
-	                    "Request validation failed",
-	                    "VALIDATION_FAILED",
-	                    request.getRequestURI(),
-	                    errors
-	            );
+		ProblemDetail pd = factory.build(HttpStatus.BAD_REQUEST, "Validation Failed", "Request validation failed",
+				"VALIDATION_FAILED", request.getRequestURI(), errors);
 
-
-	    return pd;
+		return pd;
 	}
-
 
 	@ExceptionHandler(InvalidEnumException.class)
 	public ProblemDetail handleInvalidEnum(InvalidEnumException ex, HttpServletRequest request) {
@@ -104,6 +96,7 @@ public class GlobalExceptionHandler {
 		ex.printStackTrace(); // IMPORTANT
 
 		return factory.build(HttpStatus.INTERNAL_SERVER_ERROR, "Server issue", ex.getMessage(), "INTERNAL_SERVER_ERROR",
-				request.getRequestURI(), null);	}
+				request.getRequestURI(), null);
+	}
 
 }

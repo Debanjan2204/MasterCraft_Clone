@@ -1,21 +1,16 @@
 package com.ded.BTS.config;
 
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -68,19 +63,11 @@ public class SecurityConfig {
 	
 	@Bean
 	OpenAPI customOpenAPI() {
-	    return new OpenAPI()
-	        .components(new Components()
-	            .addSecuritySchemes("oauth2",
-	                new SecurityScheme()
-	                    .type(SecurityScheme.Type.OAUTH2)
-	                    .flows(new OAuthFlows()
-	                        .password(new OAuthFlow()
-	                            .tokenUrl("/auth/login")
-	                        )
-	                    )
-	            )
-	        )
-	        .addSecurityItem(new SecurityRequirement().addList("oauth2"));
+		return new OpenAPI()
+				.components(new Components().addSecuritySchemes("oauth2",
+						new SecurityScheme().type(SecurityScheme.Type.OAUTH2)
+								.flows(new OAuthFlows().password(new OAuthFlow().tokenUrl("/auth/login")))))
+				.addSecurityItem(new SecurityRequirement().addList("oauth2"));
 	}
 	
 	@Bean

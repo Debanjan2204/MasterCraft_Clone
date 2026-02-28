@@ -3,6 +3,7 @@ package com.ded.BTS.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,7 @@ import com.ded.BTS.model.User;
 import com.ded.BTS.model.UserRole;
 import com.ded.BTS.repository.RoleRepo;
 import com.ded.BTS.repository.UserRepo;
+import com.ded.BTS.security.model.CurrentUser;
 import com.ded.BTS.security.model.RegisterRequest;
 
 @Service
@@ -22,29 +24,31 @@ public class UserService {
     private final UserRepo userRepository;
     private final RoleRepo roleRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final CurrentUser currentUser;
     
     
     
     
-    public UserService(UserRepo userRepository, RoleRepo roleRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepo userRepository, RoleRepo roleRepository, PasswordEncoder passwordEncoder,CurrentUser currentUser) {
 		super();
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.currentUser=currentUser;
 	}
 
 
 
 
 
-	public void createUser(RegisterRequest request) {
+	public String createUser(RegisterRequest request) {
 
-        if (userRepository.existsByUsername(request.username())) {
+		String retString=null;
+        if (userRepository.existsByUsername(request.username(),UserStatus.ACTIVE)) {
             throw new IllegalArgumentException("Username already exists");
         }
 
-        if (userRepository.existsByEmail(request.email())) {
+        if (userRepository.existsByEmail(request.email(),UserStatus.ACTIVE)) {
             throw new IllegalArgumentException("Email already exists");
         }
 
@@ -53,7 +57,16 @@ public class UserService {
         user.setEmail(request.email());
         user.setFullName(request.fullName());
         user.setPasswordHash(passwordEncoder.encode(request.password()));
-        user.setStatus(UserStatus.ACTIVE);
+        if(currentUser.getLoggedInUser()!=null && currentUser.getLoggedInUser().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
+        {
+        	user.setStatus(UserStatus.ACTIVE);
+        	retString="ACTIVE";
+        }
+        else {
+        	user.setStatus(UserStatus.UNVERIFIED);
+        }
+        
+        
 
         for (String roleName : request.roles()) {
 
@@ -70,13 +83,14 @@ public class UserService {
         }
 
         userRepository.save(user);
+        return retString;
     }
 	
 	
 	@Transactional
 	public void assignRoleToUser(String username, String roleName) {
 
-	    User user = userRepository.findByUsernameWithRoles(username)
+	    User user = userRepository.findByUsernameWithRoles(username,UserStatus.ACTIVE)
 	            .orElseThrow(() -> 
 	                new IllegalArgumentException("User not found: " + username));
 

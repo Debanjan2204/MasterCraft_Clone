@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.ded.BTS.Exceptions.AuthorizationException;
 import com.ded.BTS.security.service.CustomUserDetailService;
 import com.ded.BTS.security.service.JwtService;
 

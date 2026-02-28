@@ -11,6 +11,7 @@ import com.ded.BTS.model.User;
 // User
 public interface TicketRepo extends JpaRepository<Ticket, Long> {
 	
+	public List<Ticket> findAllByOrderByIdAsc();
 	public List<Ticket> findByProject(Project project);
 	public List<Ticket> findByAssignee(User assignee);
 	public List<Ticket> findByReporter(User reporter);
