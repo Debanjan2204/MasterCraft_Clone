@@ -9,11 +9,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 )
 public record AddCommentRequest(
 
-        @Schema(
-                description = "Unique identifier of the comment author",
-                example = "101"
-        )
-        Long authorId,
 
         @NotBlank
         @Schema(

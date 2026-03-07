@@ -1,21 +1,29 @@
 package com.ded.BTS.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.hibernate.annotations.SQLRestriction;
 
+import com.ded.BTS.enums.RoleStatus;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(name = "user_roles", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "role_id"}))
-@org.hibernate.annotations.SQLRestriction("rec_end_date = TIMESTAMP '9999-01-01 00:00:00'")
+@SQLRestriction("rec_end_date = high_date()")
 public class UserRole extends BaseEntity {
 
     @Id
@@ -30,7 +38,12 @@ public class UserRole extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", nullable = false)
+    @JsonManagedReference
     private Role role;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RoleStatus status;
 
     /* Getters and Setters */
     public Long getId() {
@@ -56,4 +69,15 @@ public class UserRole extends BaseEntity {
     public void setRole(Role role) {
         this.role = role;
     }
+
+	public RoleStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(RoleStatus status) {
+		this.status = status;
+	}
+	
+
+    
 }

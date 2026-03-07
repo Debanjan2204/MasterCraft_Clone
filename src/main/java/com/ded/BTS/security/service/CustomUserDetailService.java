@@ -4,7 +4,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.ded.BTS.enums.RoleStatus;
 import com.ded.BTS.enums.UserStatus;
 import com.ded.BTS.model.User;
 import com.ded.BTS.repository.UserRepo;
@@ -26,9 +28,10 @@ public class CustomUserDetailService implements UserDetailsService {
 
 
 	@Override
+	@Transactional(readOnly = true)
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
-		User user = userRepo.findByUsernameWithRoles(username, UserStatus.ACTIVE)
+		User user = userRepo.findAuthUser(username, UserStatus.ACTIVE)
 				.orElseThrow(() -> new EntityNotFoundException(
 						"Active User with username " + username + " not found"));
 		

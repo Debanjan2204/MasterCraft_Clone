@@ -4,9 +4,11 @@ import java.time.Instant;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +27,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/tickets")
 @SecurityRequirement(name = "oauth2")
@@ -40,7 +42,7 @@ public class ActionTicketController {
 
 	@Tag(name = "2️⃣ Ticket - Write Operations")
 	@Operation(summary = "Assing a ticket to an user")
-	@PostMapping("/{ticketId}/assign")
+	@PutMapping("/{ticketId}/assign")
 	public ResponseEntity<TicketResponse> assignTicket(@Valid @RequestBody AssignTicketRequest assignTicketRequest,
 			@PathVariable Long ticketId) {
 		return ResponseEntity.status(HttpStatus.OK).body(ticketService.assignTicket(ticketId, assignTicketRequest.userName()));
@@ -48,7 +50,7 @@ public class ActionTicketController {
 
 	@Tag(name = "2️⃣ Ticket - Write Operations")
 	@Operation(summary = "Change ticket Status")
-	@PostMapping("/{ticketId}/status")
+	@PutMapping("/{ticketId}/status")
 	public ResponseEntity<TicketResponse> changeTicketStatus(@Valid @RequestBody ChangeStatusRequest changeStatusRequest,
 			@PathVariable Long ticketId) {
 		return ResponseEntity.status(HttpStatus.OK).body(ticketService.changeTicketStatus(ticketId, changeStatusRequest.status()));
@@ -56,7 +58,7 @@ public class ActionTicketController {
 
 	@Tag(name = "2️⃣ Ticket - Write Operations")
 	@Operation(summary = "Update ticket Priority")
-	@PostMapping("/{ticketId}/priority")
+	@PutMapping("/{ticketId}/priority")
 	public ResponseEntity<TicketResponse> changeTicketPriority(@Valid @RequestBody ChangePriorityRequest changePriorityRequest,
 			@PathVariable Long ticketId) {
 		return ResponseEntity.status(HttpStatus.OK).body(ticketService.setPriority(ticketId, changePriorityRequest.priority()));
@@ -64,7 +66,7 @@ public class ActionTicketController {
 
 	@Tag(name = "2️⃣ Ticket - Write Operations")
 	@Operation(summary = "Change ticket due date")
-	@PostMapping("/{ticketId}/due-date")
+	@PutMapping("/{ticketId}/due-date")
 	public ResponseEntity<TicketResponse> changeTicketDueDate(
 			@Valid @RequestBody ChangeDueDateRequest changeDueDateRequest,
 			@PathVariable Long ticketId) {

@@ -6,7 +6,8 @@ public record TicketCommentResponse (
 		
 		Long id,
 		UserSummary author,
-		String content
+		String content,
+		java.time.Instant time
 		
 		){
 

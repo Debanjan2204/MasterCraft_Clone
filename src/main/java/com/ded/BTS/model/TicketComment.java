@@ -1,4 +1,6 @@
 package com.ded.BTS.model;
+import org.hibernate.annotations.SQLRestriction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -11,7 +13,7 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 @Entity
 @Table(name = "ticket_comments")
-//@org.hibernate.annotations.SQLRestriction("rec_end_date = TIMESTAMP '9999-01-01 00:00:00'")
+@SQLRestriction("rec_end_date = high_date()")
 public class TicketComment extends BaseEntity {
 
     @Id

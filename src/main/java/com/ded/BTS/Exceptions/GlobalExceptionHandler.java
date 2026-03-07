@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
@@ -61,6 +62,22 @@ public class GlobalExceptionHandler {
 		return pd;
 
 	}
+	
+	@ExceptionHandler(RoleNotFoundException.class)
+	public ProblemDetail handleRoleNotFound(RoleNotFoundException ex , HttpServletRequest request) {
+
+		return factory.build(HttpStatus.BAD_REQUEST, "Invalid Role Value", ex.getMessage(), "INVALID_ROLE_VALUE",
+				request.getRequestURI(), Map.of("Invalid Roles", ex.getMissingRoles()));
+	
+	}
+	
+	@ExceptionHandler(RoleAlreadyAssignedException.class)
+	public ProblemDetail handleRoleALreadyAssigned(RoleAlreadyAssignedException ex , HttpServletRequest request) {
+
+		return factory.build(HttpStatus.BAD_REQUEST, "ALready Role Value", ex.getMessage(), "ALREADY_ASSIGNED_ROLE_VALUE",
+				request.getRequestURI(), Map.of("ALready assigned Roles", ex.getDuplicateRoles()));
+	
+	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ProblemDetail handleValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
@@ -89,7 +106,12 @@ public class GlobalExceptionHandler {
 		return factory.build(HttpStatus.NOT_FOUND, "Resource Not Found", ex.getMessage(), "RESOURCE_NOT_FOUND",
 				request.getRequestURI(), null);
 	}
+	@ExceptionHandler(BadCredentialsException.class)
+	public ProblemDetail handleNotFound(BadCredentialsException ex, HttpServletRequest request) {
 
+		return factory.build(HttpStatus.BAD_REQUEST, "UserName or Password invalid", ex.getMessage(), "BAD_CREDENTIALS",
+				request.getRequestURI(), null);
+	}
 	@ExceptionHandler(Exception.class)
 	public ProblemDetail debug(Exception ex, HttpServletRequest request) {
 
@@ -97,6 +119,17 @@ public class GlobalExceptionHandler {
 
 		return factory.build(HttpStatus.INTERNAL_SERVER_ERROR, "Server issue", ex.getMessage(), "INTERNAL_SERVER_ERROR",
 				request.getRequestURI(), null);
+	}
+	
+	
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ProblemDetail handleIllegalArguments(IllegalArgumentException ex, HttpServletRequest request) {
+
+		ProblemDetail pd = factory.build(HttpStatus.BAD_REQUEST, "Validation Failed", "Request validation failed",
+				"VALIDATION_FAILED", request.getRequestURI(),ex.getMessage());
+
+		return pd;
+
 	}
 
 }

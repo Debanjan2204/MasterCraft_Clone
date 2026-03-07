@@ -2,6 +2,8 @@ package com.ded.BTS.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.SQLRestriction;
+
 import com.ded.BTS.enums.UserStatus;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -21,6 +23,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
+@SQLRestriction("rec_end_date = high_date()")
 public class User extends BaseEntity {
 
     @Id

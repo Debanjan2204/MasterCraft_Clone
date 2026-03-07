@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
+import org.hibernate.annotations.SQLRestriction;
 
 import com.ded.BTS.beans.TicketEventListener;
 import com.ded.BTS.enums.TicketPriority;
@@ -30,6 +31,7 @@ import jakarta.persistence.Transient;
 @Entity
 @Table(name = "tickets")
 @EntityListeners(TicketEventListener.class)
+@SQLRestriction("rec_end_date = high_date()")
 public class Ticket extends BaseEntity {
 
     @Id

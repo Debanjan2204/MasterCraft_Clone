@@ -3,8 +3,14 @@ package com.ded.BTS.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ded.BTS.enums.RoleNames;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,9 +29,11 @@ public class Role {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private RoleNames name;
 
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
+    @JsonBackReference
     private List<UserRole> userRoles = new ArrayList<>();
     
     /* Getters and Setters */
@@ -37,13 +45,17 @@ public class Role {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public RoleNames getName() {
+		return name;
+	}
+	public String getNameString() {
+		return name.toString() ;
+	}
+
+	public void setName(RoleNames name) {
+		this.name = name;
+	}
 
 	public List<UserRole> getUserRoles() {
 		return userRoles;

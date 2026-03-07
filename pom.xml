@@ -36,7 +36,7 @@
 			<artifactId>mapstruct</artifactId>
 			<version>1.5.5.Final</version>
 		</dependency>
-
+	
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct-processor</artifactId>
@@ -99,7 +99,20 @@
 		    <groupId>org.springdoc</groupId>
 		    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 		    <version>2.7.0</version>
-		</dependency>		
+		</dependency>	
+		
+	<!-- APACHE TIKA FOR FILE TYPE DETECTION-->
+		<dependency>
+		    <groupId>org.apache.tika</groupId>
+		    <artifactId>tika-core</artifactId>
+		    <version>2.9.2</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.apache.tika</groupId>
+		    <artifactId>tika-parsers-standard-package</artifactId>
+		    <version>2.9.2</version>
+		</dependency>	
 	</dependencies>
 
 	<build>

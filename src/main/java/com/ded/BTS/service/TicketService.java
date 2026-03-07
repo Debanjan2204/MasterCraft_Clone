@@ -154,6 +154,12 @@ public class TicketService {
 		return ticketResponseMapper
 				.toResponse(ticketRepo.findById(ticketId).orElseThrow(()-> new EntityNotFoundException("Ticket Number "+ticketId+" not found")));
 	}
+	
+	public List<TicketResponse> getTicketByStatusOrPriorityOrName(TicketStatus ticketStatus,TicketPriority ticketPriority,String name) {
+
+		return ticketResponseMapper
+				.toResponseList(ticketRepo.findByStatusOrPriorityOrTitle(ticketStatus, ticketPriority, name));
+	}
 
 	public List<TicketResponse> getTicketsByProject(Long projectId) {
 		Project project = projectRepo.findById(projectId).orElseThrow(()-> new EntityNotFoundException("Project with id "+projectId+" not found"));

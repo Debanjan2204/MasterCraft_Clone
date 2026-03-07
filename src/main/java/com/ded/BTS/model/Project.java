@@ -1,5 +1,7 @@
 package com.ded.BTS.model;
 
+import org.hibernate.annotations.SQLRestriction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,6 +15,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "projects")
+@SQLRestriction("rec_end_date = high_date()")
 public class Project extends BaseEntity {
 
     @Id

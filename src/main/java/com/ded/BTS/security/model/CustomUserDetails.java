@@ -7,6 +7,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.ded.BTS.enums.RoleStatus;
 import com.ded.BTS.enums.UserStatus;
 import com.ded.BTS.model.User;
 
@@ -23,7 +24,8 @@ public class CustomUserDetails implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return user.getUserRoles().stream().map(ur -> new SimpleGrantedAuthority(ur.getRole().getName())).toList();
+		return user.getUserRoles().stream().filter(ur -> ur.getStatus() == RoleStatus.APPROVED)
+				.map(ur -> new SimpleGrantedAuthority(ur.getRole().getNameString())).toList();
 	}
 
 	@Override

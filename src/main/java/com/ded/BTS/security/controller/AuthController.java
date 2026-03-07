@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,10 +18,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ded.BTS.enums.RoleNames;
 import com.ded.BTS.enums.UserStatus;
+import com.ded.BTS.model.ApproveUserDetailRequest;
 import com.ded.BTS.model.Role;
 import com.ded.BTS.model.User;
 import com.ded.BTS.model.UserRole;
+import com.ded.BTS.model.UserSummary;
 import com.ded.BTS.repository.RoleRepo;
 import com.ded.BTS.repository.UserRepo;
 import com.ded.BTS.security.model.JwtResponse;
@@ -38,6 +42,7 @@ import org.springframework.http.MediaType;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "*")
 public class AuthController {
 
 
@@ -80,21 +85,34 @@ public class AuthController {
 	    return ResponseEntity.ok("User created successfully");
 		}
 		else {
-		    return ResponseEntity.ok("User created successfully \nAwaiting Administrator verification");
+		    return ResponseEntity.status(204).body("User created successfully \nAwaiting Administrator verification");
 
 		}
 	}
 	
-	@Hidden
+	
+	@Tag(name = "User Role Assigning Operations")
+	@Operation(summary = "Assign a role to an user")
 	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 	@PostMapping("/users/{username}/assign-roles")
-	public ResponseEntity<?> assignRole(
-	        @PathVariable String username,
-	        @RequestBody String roleName) {
+	public ResponseEntity<?> assignRole(@PathVariable String username, @RequestBody List<String> roleName) {
 		userService.assignRoleToUser(username, roleName);
-	    return ResponseEntity.ok("Role assigned successfully");
+		return ResponseEntity.ok("Role assigned successfully");
 	}
 
-
+	@Tag(name = "User Role Assigning Operations")
+	@Operation(summary = "Get All Pending Auth user")
+	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	@GetMapping("/users/pending-auth")
+	public ResponseEntity<?> getPendingAuthorizationUsers(){
+	 return	ResponseEntity.ok().body(userService.getPendingAuthorizationUsers());
+	}
+	@Tag(name = "User Role Assigning Operations")
+	@Operation(summary = "Authorize an user")
+	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	@PostMapping("/users/pending-auth")
+	public ResponseEntity<?> AuthorizeUser(@RequestBody ApproveUserDetailRequest approveUserDetailRequest){
+		 return	ResponseEntity.ok().body(userService.authorizeUser(approveUserDetailRequest));
+		}
 
 }

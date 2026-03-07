@@ -18,7 +18,7 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
 
-	private final String SECRET = "MY_SPECIAL_SECRET_KEY_FOR_HMAC_SIGNING";
+	private final String SECRET = "MY_SPECIAL_SECRET_KEY_FOR_HMAC_SIGNING_1";
 	
 	@Value("${jwt.token.expiration}")
 	private  long EXPIRATION; // 1hr
