@@ -10,12 +10,19 @@ import io.github.cdimascio.dotenv.Dotenv;
 public class BtsApplication {
 
 	public static void main(String[] args) {
-		 Dotenv dotenv = Dotenv.load();
-	        System.setProperty("PGHOST", dotenv.get("PGHOST"));
-	        System.setProperty("PGDATABASE", dotenv.get("PGDATABASE"));
-	        System.setProperty("PGUSER", dotenv.get("PGUSER"));
-	        System.setProperty("PGPASSWORD", dotenv.get("PGPASSWORD"));
-	        System.setProperty("PGSSLMODE", dotenv.get("PGSSLMODE"));
+		   Dotenv dotenv = Dotenv.configure()
+	                .ignoreIfMissing()  // won't crash if .env is missing
+	                .load();
+
+	        // Only set if value exists
+	        if (dotenv.get("PGHOST", null) != null) {
+	            System.setProperty("PGHOST", dotenv.get("PGHOST"));
+	            System.setProperty("PGDATABASE", dotenv.get("PGDATABASE"));
+	            System.setProperty("PGUSER", dotenv.get("PGUSER"));
+	            System.setProperty("PGPASSWORD", dotenv.get("PGPASSWORD"));
+	            System.setProperty("PGSSLMODE", dotenv.get("PGSSLMODE"));
+	            System.setProperty("PGCHANNELBINDING", dotenv.get("PGCHANNELBINDING"));
+	        }
 		SpringApplication.run(BtsApplication.class, args);
 	}
 
