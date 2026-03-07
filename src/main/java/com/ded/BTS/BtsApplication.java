@@ -22,6 +22,10 @@ public class BtsApplication {
 	            System.setProperty("PGPASSWORD", dotenv.get("PGPASSWORD"));
 	            System.setProperty("PGSSLMODE", dotenv.get("PGSSLMODE"));
 	            System.setProperty("PGCHANNELBINDING", dotenv.get("PGCHANNELBINDING"));
+	            System.setProperty("B2_KEY_ID", dotenv.get("B2_KEY_ID"));
+	            System.setProperty("B2_APP_KEY", dotenv.get("B2_APP_KEY"));
+	            System.setProperty("B2_BUCKET_NAME", dotenv.get("B2_BUCKET_NAME"));
+	            System.setProperty("B2_ENDPOINT", dotenv.get("B2_ENDPOINT"));
 	        }
 		SpringApplication.run(BtsApplication.class, args);
 	}

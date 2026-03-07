@@ -64,23 +64,17 @@ public class AttachmentController {
 	@GetMapping("download-attachment/{id}")
 	@Tag(name = "Ticket - Attachment Download Operations")
 	@Operation(summary = "download ticket attachment")
-	public ResponseEntity<Resource> download(@PathVariable Long id) throws MalformedURLException
-	       {
-
+	public ResponseEntity<byte[]> download(@PathVariable Long id) {
 	    Attachment attachment = attachmentService.findAttachmentById(id);
-
-	    Path path = Paths.get(attachment.getFilePath());
-
-	    Resource resource = new UrlResource(path.toUri());
-
+	    byte[] data = attachmentService.downloadAttachment(id);
 	    return ResponseEntity.ok()
-	            .contentType(MediaType.parseMediaType(
-	                    attachment.getContentType()))
+	            .contentType(MediaType.parseMediaType(attachment.getContentType()))
 	            .header(HttpHeaders.CONTENT_DISPOSITION,
-	                    "attachment; filename=\"" +
-	                    attachment.getOriginalName() + "\"")
-	            .body(resource);
+	                    "attachment; filename=\"" + attachment.getOriginalName() + "\"")
+	            .body(data);
 	}
+	
+	
 	@DeleteMapping("/tickets/{ticketId}/attachments")
 	@Tag(name = "Ticket - Attachment delete Operations")
 	@Operation(summary = "delete ticket attachments")
