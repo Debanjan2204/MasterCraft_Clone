@@ -95,7 +95,11 @@ public class SecurityConfig {
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
 	    CorsConfiguration configuration = new CorsConfiguration();
-	    configuration.setAllowedOrigins(List.of("https://mastercraft-clone.onrender.com/","http://localhost:5173","https://master-craft-clone-frontend.vercel.app"));
+		configuration.setAllowedOrigins(List.of("https://mastercraft-clone.onrender.com/",
+				"https://mastercraftclone-production.up.railway.app/", 
+				"http://localhost:5173",
+				"https://master-craft-clone-frontend.vercel.app", 
+				"https://master-craft-clone-frontend.vercel.app"));
 	    configuration.setAllowedMethods((List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")));
 	    configuration.setAllowedHeaders(List.of("*"));
 	    configuration.setAllowCredentials(true);
