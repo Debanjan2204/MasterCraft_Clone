@@ -32,6 +32,8 @@ import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
+import software.amazon.awssdk.services.s3.model.ListObjectVersionsRequest;
+import software.amazon.awssdk.services.s3.model.ListObjectVersionsResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 @Service
@@ -137,12 +139,35 @@ public class AttachmentService {
                 );
 
                 // Delete from original location
-                s3Client.deleteObject(
-                    DeleteObjectRequest.builder()
+             // List all versions of the file
+                ListObjectVersionsResponse versions = s3Client.listObjectVersions(
+                    ListObjectVersionsRequest.builder()
                         .bucket(bucketName)
-                        .key(b2Key)
+                        .prefix(b2Key)
                         .build()
                 );
+
+                // Delete all versions
+                versions.versions().forEach(version -> {
+                    s3Client.deleteObject(
+                        DeleteObjectRequest.builder()
+                            .bucket(bucketName)
+                            .key(version.key())
+                            .versionId(version.versionId())
+                            .build()
+                    );
+                });
+
+                // Also delete any hide markers
+                versions.deleteMarkers().forEach(marker -> {
+                    s3Client.deleteObject(
+                        DeleteObjectRequest.builder()
+                            .bucket(bucketName)
+                            .key(marker.key())
+                            .versionId(marker.versionId())
+                            .build()
+                    );
+                });
                         } catch (Exception e) {
                 throw new ProcessingException("Exception occurred while archiving attachments of Ticket Id " + ticketId, e);
             }
