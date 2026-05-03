@@ -56,7 +56,7 @@ public class SecurityConfig {
 	SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(authe -> authe
-						.requestMatchers("/auth/**", "/error", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
+						.requestMatchers("/auth/**", "/error","/api/ping", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
 						.permitAll().anyRequest().access((authentication, context) -> {
 
 						    Authentication auth = authentication.get();
