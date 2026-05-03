@@ -8,6 +8,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import com.ded.BTS.AI.AiService;
+import com.ded.BTS.AI.service.GeminiService;
 import com.ded.BTS.DTO.request.AddCommentRequest;
 import com.ded.BTS.DTO.request.CreateTicketRequest;
 import com.ded.BTS.DTO.request.UpdateTicketRequest;
@@ -51,7 +53,7 @@ public class TicketService {
 	private final TicketCommentResponseMapper ticketCommentResponseMapper;
 	private final CurrentUser currentUser;
 	private final ApplicationEventPublisher applicationEventPublisher;
-
+	private final AiService geminiService;
 
 
 
@@ -61,7 +63,7 @@ public class TicketService {
 			CreateTicketResponseMapper createTicketResponseMapper, UpdateTicketRequestMapper updateTicketRequestMapper,
 			TicketResponseMapper ticketResponseMapper, AddCommentRequestMapper addCommentRequestMapper,
 			TicketCommentResponseMapper ticketCommentResponseMapper, CurrentUser currentUser,
-			ApplicationEventPublisher applicationEventPublisher) {
+			ApplicationEventPublisher applicationEventPublisher,AiService geminiService) {
 		super();
 		this.ticketRepo = ticketRepo;
 		this.userRepo = userRepo;
@@ -75,6 +77,7 @@ public class TicketService {
 		this.ticketCommentResponseMapper = ticketCommentResponseMapper;
 		this.currentUser = currentUser;
 		this.applicationEventPublisher = applicationEventPublisher;
+		this.geminiService=geminiService;
 	}
 
 	@Transactional
@@ -206,6 +209,16 @@ public class TicketService {
 		ticketRepo.save(ticket);
 		applicationEventPublisher.publishEvent(ticket);
 		return Boolean.TRUE;
+	}
+	
+	public String getSummarizedComments(Long ticketId) {
+		TicketResponse ticket = getTicketById(ticketId);
+		List<TicketCommentResponse> comments = getCommentsByTicket(ticketId);
+		return geminiService.summarizeComments(comments, ticket, currentUser.getLoggedInUserId());
+	}
+	
+	public String  test(String prompt) {
+		return geminiService.TEST(prompt);
 	}
 
 }
