@@ -36,3 +36,5 @@ build/
 .vscode/
 attachments
 .env
+target\BTS-0.0.1-SNAPSHOT.jar.original
+target\BTS-0.0.1-SNAPSHOT.jar
