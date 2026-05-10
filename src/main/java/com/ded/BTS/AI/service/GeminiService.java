@@ -3,6 +3,8 @@ package com.ded.BTS.AI.service;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -22,8 +24,10 @@ public class GeminiService implements AiService {
 
     private final Jackson2ObjectMapperBuilderCustomizer jsonCustomizer;
 
-	private static final String API_KEY = "AIzaSyCpBG7Pm5kBkPBvPjLZrhzhK1iDA30sYbU";
-	 private static final String baseUrl = "https://generativelanguage.googleapis.com/v1beta";
+    @Value("${spring.ai.openai.api-key}")
+	private   String API_KEY ;
+    @Value("${spring.ai.openai.base-url}")
+	private   String baseUrl ;
 	
 	
 	private final WebClient webClient;
