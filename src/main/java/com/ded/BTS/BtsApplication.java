@@ -26,6 +26,8 @@ public class BtsApplication {
 	            System.setProperty("B2_APP_KEY", dotenv.get("B2_APP_KEY"));
 	            System.setProperty("B2_BUCKET_NAME", dotenv.get("B2_BUCKET_NAME"));
 	            System.setProperty("B2_ENDPOINT", dotenv.get("B2_ENDPOINT"));
+	            System.setProperty("API_BASE_URL", dotenv.get("API_BASE_URL"));
+	            System.setProperty("OPENAPI_KEY", dotenv.get("OPENAPI_KEY"));
 	        }
 		SpringApplication.run(BtsApplication.class, args);
 	}
